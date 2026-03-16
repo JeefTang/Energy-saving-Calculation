@@ -337,12 +337,12 @@ a{color:var(--primary);text-decoration:none}
             <input type="text" id="newName" placeholder="如：7柱塞式注水泵" value="7柱塞式注水泵">
           </div>
           <div class="form-group">
-            <label>额定流量 <span class="unit">m³/h</span> <span style="color:#94a3b8;font-size:11px">自动=原流量×1.5</span></label>
-            <input type="number" id="ratedFlow" value="160">
+            <label>流量 <span class="unit">m³/h</span> <span style="color:#94a3b8;font-size:11px">自动=原设备平均流量</span></label>
+            <input type="number" id="ratedFlow" value="" readonly style="background:#f1f5f9">
           </div>
           <div class="form-group">
-            <label>额定压力 <span class="unit">MPa</span> <span style="color:#94a3b8;font-size:11px">自动=原出口压力+1</span></label>
-            <input type="number" id="ratedPressure" value="15.5" step="0.1">
+            <label>出口压力 <span class="unit">MPa</span> <span style="color:#94a3b8;font-size:11px">自动=原设备出口压力</span></label>
+            <input type="number" id="ratedPressure" value="" readonly style="background:#f1f5f9">
           </div>
           <div class="form-group">
             <label>电机功率 <span class="unit">kW</span> <span style="color:#94a3b8;font-size:11px">自动=轴功率×1.1裕度</span></label>
@@ -360,6 +360,12 @@ a{color:var(--primary);text-decoration:none}
             <label>泵效率</label>
             <input type="number" id="pumpEff" value="0.93" step="0.01">
           </div>
+        </div>
+        <div class="note" style="margin-top:14px;padding:10px 12px;background:#f0fdfa;border-radius:8px;border:1px dashed #99f6e4;line-height:1.8">
+          <b>💡 选型指导：</b><br>
+          额定流量 = 流量 × 1.5 = <span id="guideRatedFlow" style="color:var(--primary-dark);font-weight:700">—</span> m³/h<br>
+          额定压力 = 出口压力 + 1 = <span id="guideRatedPressure" style="color:var(--primary-dark);font-weight:700">—</span> MPa<br>
+          <span style="color:#94a3b8;font-size:11px">* 系统按额定流量和额定压力进行节能测算</span>
         </div>
       </div>
 
@@ -624,14 +630,15 @@ function autoCalcNew() {
   const inPressure = +document.getElementById('inPressure').value || 0;
   const outPressure = +document.getElementById('outPressure').value || 0;
   const pumpEff = +document.getElementById('pumpEff').value || 0.93;
-  if (avgFlow > 0 && outPressure > 0) {
-    const newFlow = avgFlow * 1.5;
-    const newPressure = outPressure + 1;
-    const shaftPower = newFlow * (newPressure - inPressure) / 3.6 / pumpEff;
-    document.getElementById('ratedFlow').value = newFlow.toFixed(1);
-    document.getElementById('ratedPressure').value = newPressure.toFixed(1);
-    document.getElementById('motorPower').value = Math.round(shaftPower * 1.1);
-  }
+  // 流量 = 原设备平均流量
+  document.getElementById('ratedFlow').value = avgFlow || '';
+  // 出口压力 = 原设备出口压力
+  document.getElementById('ratedPressure').value = outPressure || '';
+  // 选型指导
+  const ratedFlowVal = avgFlow > 0 ? (avgFlow * 1.5).toFixed(1) : '—';
+  const ratedPressureVal = outPressure > 0 ? (outPressure + 1).toFixed(1) : '—';
+  document.getElementById('guideRatedFlow').textContent = ratedFlowVal;
+  document.getElementById('guideRatedPressure').textContent = ratedPressureVal;
 }
 
 // ==================== MAIN CALC ====================
@@ -645,8 +652,12 @@ function calculate() {
 
   const unitCostOld = dailyPower / dailyWater;
   const unitMPaOld = dailyPower / (dailyWater * outPressure);
-  const pShaft = avgFlow * (outPressure - inPressure) / 3.6 / pumpEff;
-  const pMotor = pShaft / motorEff;
+  // 用额定流量和额定压力计算（额定流量=流量×1.5，额定压力=出口压力+1）
+  const ratedFlowCalc = avgFlow * 1.5;
+  const ratedPressureCalc = outPressure + 1;
+  const pShaft = ratedFlowCalc * (ratedPressureCalc - inPressure) / 3.6 / pumpEff;
+  const motorPowerCalc = pShaft / motorEff;
+  const pMotor = motorPowerCalc;
   const pVfd = pMotor / vfdEff;
   const unitCostNew = pVfd / avgFlow;
   const unitMPaNew = (pVfd * 24) / (outPressure * dailyWater);
