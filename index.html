@@ -652,12 +652,9 @@ function calculate() {
 
   const unitCostOld = dailyPower / dailyWater;
   const unitMPaOld = dailyPower / (dailyWater * outPressure);
-  // 用额定流量和额定压力计算（额定流量=流量×1.5，额定压力=出口压力+1）
-  const ratedFlowCalc = avgFlow * 1.5;
-  const ratedPressureCalc = outPressure + 1;
-  const pShaft = ratedFlowCalc * (ratedPressureCalc - inPressure) / 3.6 / pumpEff;
-  const motorPowerCalc = pShaft / motorEff;
-  const pMotor = motorPowerCalc;
+  // 按实际平均流量和出口压力计算节能率
+  const pShaft = avgFlow * (outPressure - inPressure) / 3.6 / pumpEff;
+  const pMotor = pShaft / motorEff;
   const pVfd = pMotor / vfdEff;
   const unitCostNew = pVfd / avgFlow;
   const unitMPaNew = (pVfd * 24) / (outPressure * dailyWater);
