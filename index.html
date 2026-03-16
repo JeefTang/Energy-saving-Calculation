@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>节能测算Pro - 柱塞泵节能测算 & 投标文件生成</title>
+<style>
+:root{--primary:#0d9488;--primary-dark:#0f766e;--primary-light:#ccfbf1;--accent:#f59e0b;--bg:#f0fdfa;--card:#fff;--text:#1e293b;--text2:#64748b;--border:#e2e8f0;--danger:#ef4444;--success:#10b981;--shadow:0 1px 3px rgba(0,0,0,.08),0 4px 12px rgba(0,0,0,.04);--shadow-lg:0 4px 24px rgba(0,0,0,.1);--radius:12px;--nav-h:60px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+a{color:var(--primary);text-decoration:none}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:#fff;display:flex;align-items:center;padding:0 24px;z-index:1000;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.nav .logo{font-size:18px;font-weight:700;cursor:pointer;white-space:nowrap}
+.nav .logo span{opacity:.7;font-size:12px;font-weight:400;margin-left:4px}
+.nav-links{display:flex;gap:8px;margin-left:32px;flex:1}
+.nav-links a{color:rgba(255,255,255,.85);font-size:14px;padding:6px 14px;border-radius:6px;transition:all .2s;cursor:pointer;white-space:nowrap}
+.nav-links a:hover,.nav-links a.active{background:rgba(255,255,255,.15);color:#fff}
+.nav-right{display:flex;align-items:center;gap:10px;margin-left:auto}
+.nav-right .user-info{font-size:13px;opacity:.9}
+.btn-nav{padding:6px 16px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s}
+.btn-nav.outline{background:transparent;border:1.5px solid rgba(255,255,255,.5);color:#fff}
+.btn-nav.outline:hover{border-color:#fff;background:rgba(255,255,255,.1)}
+.btn-nav.danger{background:rgba(255,255,255,.15);color:#fff}
+.btn-nav.danger:hover{background:rgba(239,68,68,.7)}
+.hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:8px}
+.hamburger span{width:22px;height:2px;background:#fff;border-radius:2px;transition:all .3s}
+
+/* MAIN */
+.main{margin-top:var(--nav-h);min-height:calc(100vh - var(--nav-h))}
+.page{display:none;animation:fadeUp .4s ease}
+.page.show{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.container{max-width:760px;margin:0 auto;padding:24px 16px 40px}
+.container-wide{max-width:960px}
+
+/* LANDING */
+.hero{background:linear-gradient(135deg,var(--primary-dark),var(--primary),#14b8a6);color:#fff;padding:80px 20px 100px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,255,255,.06) 0%,transparent 60%)}
+.hero h1{font-size:36px;font-weight:800;position:relative;margin-bottom:12px}
+.hero .sub{font-size:18px;opacity:.9;margin-bottom:32px;position:relative}
+.hero-buttons{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;position:relative}
+.btn-hero{padding:14px 36px;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;border:none;transition:all .2s}
+.btn-hero.primary{background:#fff;color:var(--primary)}
+.btn-hero.primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.2)}
+.btn-hero.secondary{background:rgba(255,255,255,.15);color:#fff;border:2px solid rgba(255,255,255,.4)}
+.btn-hero.secondary:hover{border-color:#fff;background:rgba(255,255,255,.2)}
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:800px;margin:-50px auto 60px;padding:0 20px;position:relative;z-index:1}
+.feature-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow-lg);padding:32px 24px;text-align:center}
+.feature-card .icon{font-size:40px;margin-bottom:12px}
+.feature-card h3{font-size:16px;font-weight:700;margin-bottom:8px;color:var(--primary-dark)}
+.feature-card p{font-size:13px;color:var(--text2);line-height:1.6}
+.landing-footer{text-align:center;padding:32px 20px;color:#94a3b8;font-size:13px;border-top:1px solid var(--border)}
+
+/* AUTH */
+.auth-wrap{max-width:400px;margin:60px auto;padding:0 16px}
+.auth-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow-lg);padding:36px 28px}
+.auth-card h2{font-size:22px;font-weight:700;text-align:center;margin-bottom:24px;color:var(--primary-dark)}
+.auth-card .tab-row{display:flex;gap:0;margin-bottom:24px;border-radius:8px;overflow:hidden;border:1.5px solid var(--border)}
+.auth-card .tab-row button{flex:1;padding:10px;font-size:14px;font-weight:600;border:none;background:#f8fafc;color:var(--text2);cursor:pointer;transition:all .2s}
+.auth-card .tab-row button.active{background:var(--primary);color:#fff}
+.form-group{display:flex;flex-direction:column;gap:4px;margin-bottom:14px}
+.form-group label{font-size:13px;color:var(--text2);font-weight:500}
+.form-group input,.form-group select,.form-group textarea{padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:15px;color:var(--text);background:#f8fafc;transition:all .2s;outline:none;width:100%;font-family:inherit}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--primary);background:#fff;box-shadow:0 0 0 3px rgba(13,148,136,.1)}
+.btn-auth{width:100%;padding:12px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;margin-top:8px}
+.btn-auth:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(13,148,136,.3)}
+.auth-error{color:var(--danger);font-size:13px;text-align:center;margin-top:8px;min-height:20px}
+
+/* CALCULATOR */
+.calc-header{background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:#fff;padding:28px 20px 40px;text-align:center;position:relative;overflow:hidden}
+.calc-header::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,255,255,.08) 0%,transparent 60%)}
+.calc-header h1{font-size:22px;font-weight:700;position:relative}
+.calc-header p{font-size:14px;opacity:.85;margin-top:6px;position:relative}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;margin-bottom:16px}
+.section-title{font-size:16px;font-weight:700;color:var(--primary-dark);margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.section-title .icon{font-size:20px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-group.full{grid-column:1/-1}
+.form-group label .unit{color:#94a3b8;font-weight:400;font-size:12px}
+.form-group textarea{resize:vertical;min-height:60px;font-size:14px}
+.btn-calc{width:100%;padding:14px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;transition:all .2s;margin-top:8px}
+.btn-calc:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(13,148,136,.3)}
+.btn-calc:active{transform:translateY(0)}
+
+/* RESULTS */
+.results{display:none}
+.results.show{display:block;animation:fadeUp .4s ease}
+.result-highlight{text-align:center;padding:20px;margin-bottom:16px}
+.result-highlight .big-num{font-size:48px;font-weight:800;color:var(--primary);line-height:1.1}
+.result-highlight .big-num .pct{font-size:28px}
+.result-highlight .label{font-size:14px;color:var(--text2);margin-top:4px}
+.metric-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.metric-row.three{grid-template-columns:1fr 1fr 1fr}
+.metric-card{background:#f8fafc;border-radius:10px;padding:16px;text-align:center;border:1px solid var(--border)}
+.metric-card .value{font-size:24px;font-weight:700}
+.metric-card .value.good{color:var(--success)}
+.metric-card .value.warn{color:var(--accent)}
+.metric-card .desc{font-size:12px;color:var(--text2);margin-top:2px}
+.detail-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:12px}
+.detail-table th,.detail-table td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--border)}
+.detail-table th{background:#f1f5f9;font-weight:600;color:var(--text2);font-size:12px}
+.detail-table td:last-child{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+.detail-table tr:last-child td{border-bottom:none}
+.compare-bar{display:flex;align-items:center;gap:12px;margin:12px 0;font-size:13px}
+.compare-bar .bar-bg{flex:1;height:24px;background:#f1f5f9;border-radius:12px;overflow:hidden;display:flex}
+.compare-bar .bar-old{height:100%;background:#fecaca;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#991b1b;transition:width .6s ease}
+.compare-bar .bar-new{height:100%;background:#a7f3d0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#065f46;transition:width .6s ease}
+.btn-export{width:100%;padding:12px;background:#fff;color:var(--primary);border:2px solid var(--primary);border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;margin-top:8px}
+.btn-export:hover{background:var(--primary-light)}
+.btn-doc{width:100%;padding:14px;background:linear-gradient(135deg,var(--accent),#d97706);color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;transition:all .2s;margin-top:12px}
+.btn-doc:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(245,158,11,.3)}
+
+/* PRICE TABLE */
+.price-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+.price-table th,.price-table td{padding:8px 10px;text-align:left;border:1px solid var(--border);font-size:13px}
+.price-table th{background:#f1f5f9;font-weight:600;font-size:12px;color:var(--text2)}
+.price-table tfoot td{font-weight:700;background:#f0fdfa}
+.price-table input{width:90px;padding:4px 6px;border:1px solid var(--border);border-radius:4px;font-size:13px;text-align:right}
+.price-table .total-cell{font-size:15px;color:var(--primary-dark)}
+
+.note{font-size:12px;color:var(--text2);margin-top:8px;line-height:1.5}
+.divider{height:1px;background:var(--border);margin:20px 0}
+
+/* PAYWALL */
+.paywall{background:linear-gradient(135deg,#fef3c7,#fde68a);border-radius:var(--radius);padding:32px 24px;text-align:center;margin-bottom:16px;border:2px solid #fbbf24}
+.paywall h3{font-size:18px;font-weight:700;color:#92400e;margin-bottom:8px}
+.paywall p{font-size:14px;color:#78350f;margin-bottom:20px}
+.pay-plans{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.pay-plan{background:#fff;border-radius:10px;padding:20px 24px;box-shadow:var(--shadow);cursor:pointer;border:2px solid transparent;transition:all .2s;min-width:160px}
+.pay-plan:hover{border-color:#f59e0b;transform:translateY(-2px)}
+.pay-plan.selected{border-color:var(--primary)}
+.pay-plan .price{font-size:28px;font-weight:800;color:var(--primary)}
+.pay-plan .price small{font-size:14px;font-weight:400}
+.pay-plan .plan-name{font-size:14px;font-weight:600;margin-bottom:4px}
+.pay-plan .plan-desc{font-size:12px;color:var(--text2)}
+.btn-pay{padding:12px 32px;background:linear-gradient(135deg,var(--accent),#d97706);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;margin-top:16px}
+.btn-pay:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(245,158,11,.3)}
+.unlocked-badge{display:inline-flex;align-items:center;gap:6px;background:var(--primary-light);color:var(--primary-dark);padding:6px 16px;border-radius:20px;font-size:13px;font-weight:600}
+.locked-overlay{position:relative}
+.locked-overlay::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.7);backdrop-filter:blur(3px);border-radius:var(--radius);display:flex;align-items:center;justify-content:center}
+.locked-msg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;z-index:2;color:#92400e;font-weight:600;font-size:15px;pointer-events:none}
+
+/* HISTORY */
+.history-list{display:flex;flex-direction:column;gap:12px}
+.history-item{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;cursor:pointer;transition:all .2s;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.history-item:hover{box-shadow:var(--shadow-lg);transform:translateY(-1px)}
+.history-item .hi-left{flex:1;min-width:200px}
+.history-item .hi-project{font-size:15px;font-weight:600;margin-bottom:4px}
+.history-item .hi-time{font-size:12px;color:var(--text2)}
+.history-item .hi-metrics{display:flex;gap:24px;flex-wrap:wrap}
+.history-item .hi-metric{text-align:center}
+.history-item .hi-metric .val{font-size:20px;font-weight:700;color:var(--primary)}
+.history-item .hi-metric .lbl{font-size:11px;color:var(--text2)}
+.history-item .hi-actions{display:flex;gap:8px}
+.btn-sm{padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .2s}
+.btn-sm.primary{background:var(--primary-light);color:var(--primary-dark)}
+.btn-sm.primary:hover{background:#99f6e4}
+.btn-sm.danger{background:#fef2f2;color:var(--danger)}
+.btn-sm.danger:hover{background:#fee2e2}
+.empty-state{text-align:center;padding:60px 20px;color:var(--text2)}
+.empty-state .icon{font-size:48px;margin-bottom:12px}
+.empty-state p{font-size:14px}
+
+/* TOAST */
+.toast{position:fixed;top:80px;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:12px 24px;border-radius:8px;font-size:14px;z-index:9999;display:none;box-shadow:var(--shadow-lg);white-space:nowrap}
+.toast.show{display:block;animation:fadeUp .3s ease}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:2000;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.show{display:flex}
+.modal{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow-lg);max-width:500px;width:100%;max-height:80vh;overflow-y:auto;padding:28px}
+.modal h3{font-size:18px;font-weight:700;margin-bottom:16px}
+.modal-close{float:right;background:none;border:none;font-size:20px;cursor:pointer;color:var(--text2)}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .nav-links{display:none;position:absolute;top:var(--nav-h);left:0;right:0;background:var(--primary-dark);flex-direction:column;padding:12px;box-shadow:var(--shadow-lg)}
+  .nav-links.open{display:flex}
+  .hamburger{display:flex}
+  .features{grid-template-columns:1fr;max-width:400px}
+  .hero h1{font-size:26px}
+  .hero .sub{font-size:15px}
+  .form-grid{grid-template-columns:1fr}
+  .metric-row,.metric-row.three{grid-template-columns:1fr}
+  .result-highlight .big-num{font-size:40px}
+}
+@media(max-width:480px){
+  .hero{padding:60px 16px 80px}
+  .hero h1{font-size:22px}
+  .history-item{flex-direction:column;align-items:flex-start}
+  .history-item .hi-metrics{width:100%}
+  .pay-plans{flex-direction:column;align-items:center}
+}
+@media print{.nav,.toast,.modal-overlay{display:none!important}.main{margin-top:0}.calc-header{background:#fff!important;color:#000!important;padding:20px}.btn-calc,.btn-export,.btn-doc,.paywall,.footer{display:none!important}.results{display:block!important}.card{box-shadow:none;border:1px solid #e2e8f0}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="navbar">
+  <div class="logo" onclick="navigate('home')">⚡节能测算Pro<span>v1.0</span></div>
+  <div class="nav-links" id="navLinks">
+    <a onclick="navigate('home')" data-page="home">首页</a>
+    <a onclick="navigate('calc')" data-page="calc">节能测算</a>
+    <a onclick="navigate('history')" data-page="history">测算历史</a>
+  </div>
+  <div class="nav-right" id="navRight"></div>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+  <!-- HOME -->
+  <div class="page show" id="page-home">
+    <div class="hero">
+      <h1>⚡ 柱塞泵节能测算 & 投标文件生成</h1>
+      <p class="sub">专业级工具 · 输入参数即出测算报告 · 一键生成投标文件</p>
+      <div class="hero-buttons">
+        <button class="btn-hero primary" onclick="navigate('calc')">🚀 立即使用</button>
+        <button class="btn-hero secondary" onclick="navigate('auth')">🔐 登录</button>
+      </div>
+    </div>
+    <div class="features">
+      <div class="feature-card" onclick="navigate('calc')">
+        <div class="icon">📊</div>
+        <h3>智能节能测算</h3>
+        <p>输入原设备运行参数，自动计算新柱塞泵方案的综合节电率、年节电量及详细计算过程</p>
+      </div>
+      <div class="feature-card" onclick="navigate('calc')">
+        <div class="icon">💰</div>
+        <h3>投资回收分析</h3>
+        <p>自动分析设备投资回收期，计算5年净收益，辅助项目决策</p>
+      </div>
+      <div class="feature-card" onclick="navigate('calc')">
+        <div class="icon">📝</div>
+        <h3>一键投标文件</h3>
+        <p>自动生成包含技术方案、报价表、资质证明等完整内容的投标文件</p>
+      </div>
+    </div>
+    <div class="landing-footer">© 2024 节能测算Pro · 柱塞泵节能测算与投标文件生成工具 · 计算结果仅供参考</div>
+  </div>
+
+  <!-- AUTH -->
+  <div class="page" id="page-auth">
+    <div class="auth-wrap">
+      <div class="auth-card">
+        <h2>🔐 用户登录</h2>
+        <div class="tab-row">
+          <button class="active" onclick="switchAuthTab('login',this)">登录</button>
+          <button onclick="switchAuthTab('register',this)">注册</button>
+        </div>
+        <div id="auth-login">
+          <div class="form-group">
+            <label>手机号</label>
+            <input type="tel" id="loginPhone" placeholder="请输入手机号" maxlength="11">
+          </div>
+          <div class="form-group">
+            <label>密码</label>
+            <input type="password" id="loginPwd" placeholder="请输入密码">
+          </div>
+          <button class="btn-auth" onclick="doLogin()">登 录</button>
+          <div class="auth-error" id="loginError"></div>
+        </div>
+        <div id="auth-register" style="display:none">
+          <div class="form-group">
+            <label>手机号</label>
+            <input type="tel" id="regPhone" placeholder="请输入手机号" maxlength="11">
+          </div>
+          <div class="form-group">
+            <label>密码</label>
+            <input type="password" id="regPwd" placeholder="请设置密码（至少6位）">
+          </div>
+          <div class="form-group">
+            <label>确认密码</label>
+            <input type="password" id="regPwd2" placeholder="请再次输入密码">
+          </div>
+          <button class="btn-auth" onclick="doRegister()">注 册</button>
+          <div class="auth-error" id="regError"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CALCULATOR -->
+  <div class="page" id="page-calc">
+    <div class="calc-header">
+      <h1>🔧 柱塞泵节能测算 & 投标文件生成</h1>
+      <p>输入参数 → 自动测算节能率 → 一键生成投标文件</p>
+    </div>
+    <div class="container" style="margin-top:-28px;position:relative;z-index:1">
+
+      <!-- 原设备数据 -->
+      <div class="card">
+        <div class="section-title"><span class="icon">📊</span> 一、原设备运行数据</div>
+        <div class="form-grid">
+          <div class="form-group full">
+            <label>原设备名称</label>
+            <input type="text" id="oldName" placeholder="如：9级离心泵" value="9级离心泵">
+          </div>
+          <div class="form-group">
+            <label>平均日注水量 <span class="unit">m³</span></label>
+            <input type="number" id="dailyWater" placeholder="2558.2" step="0.1">
+          </div>
+          <div class="form-group">
+            <label>平均日耗电量 <span class="unit">kWh</span></label>
+            <input type="number" id="dailyPower" placeholder="20730.6" step="0.1">
+          </div>
+          <div class="form-group">
+            <label>平均流量 <span class="unit">m³/h</span></label>
+            <input type="number" id="avgFlow" placeholder="106.6" step="0.1" oninput="autoCalcNew()">
+          </div>
+          <div class="form-group">
+            <label>平均输入功率 <span class="unit">kW</span></label>
+            <input type="number" id="avgInputPower" placeholder="863.8" step="0.1" oninput="autoCalcNew()">
+          </div>
+          <div class="form-group">
+            <label>进口压力 <span class="unit">MPa</span></label>
+            <input type="number" id="inPressure" placeholder="0.07" step="0.001" oninput="autoCalcNew()">
+          </div>
+          <div class="form-group">
+            <label>出口压力 <span class="unit">MPa</span></label>
+            <input type="number" id="outPressure" placeholder="14.5" step="0.1" oninput="autoCalcNew()">
+          </div>
+        </div>
+      </div>
+
+      <!-- 新设备参数 -->
+      <div class="card">
+        <div class="section-title"><span class="icon">⚙️</span> 二、新设备选型参数</div>
+        <div class="form-grid">
+          <div class="form-group full">
+            <label>新设备名称</label>
+            <input type="text" id="newName" placeholder="如：7柱塞式注水泵" value="7柱塞式注水泵">
+          </div>
+          <div class="form-group">
+            <label>额定流量 <span class="unit">m³/h</span> <span style="color:#94a3b8;font-size:11px">自动=原流量×1.5</span></label>
+            <input type="number" id="ratedFlow" value="160">
+          </div>
+          <div class="form-group">
+            <label>额定压力 <span class="unit">MPa</span> <span style="color:#94a3b8;font-size:11px">自动=原出口压力+1</span></label>
+            <input type="number" id="ratedPressure" value="15.5" step="0.1">
+          </div>
+          <div class="form-group">
+            <label>电机功率 <span class="unit">kW</span> <span style="color:#94a3b8;font-size:11px">自动=轴功率×1.1裕度</span></label>
+            <input type="number" id="motorPower" value="800">
+          </div>
+          <div class="form-group">
+            <label>电机效率</label>
+            <input type="number" id="motorEff" value="0.95" step="0.01">
+          </div>
+          <div class="form-group">
+            <label>变频器效率</label>
+            <input type="number" id="vfdEff" value="0.97" step="0.01">
+          </div>
+          <div class="form-group">
+            <label>泵效率</label>
+            <input type="number" id="pumpEff" value="0.93" step="0.01">
+          </div>
+        </div>
+      </div>
+
+      <!-- 运营参数 -->
+      <div class="card">
+        <div class="section-title"><span class="icon">📅</span> 三、运营参数</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>年运行天数 <span class="unit">天</span></label>
+            <input type="number" id="runDays" value="346">
+          </div>
+          <div class="form-group">
+            <label>电价 <span class="unit">元/kWh</span></label>
+            <input type="number" id="elecPrice" value="0.6" step="0.01">
+          </div>
+        </div>
+      </div>
+
+      <!-- 设备造价 -->
+      <div class="card">
+        <div class="section-title"><span class="icon">💰</span> 四、设备造价（投标报价）</div>
+        <table class="price-table" id="priceTable">
+          <thead><tr><th>序号</th><th>设备/服务名称</th><th>数量</th><th>单价（万元）</th><th>合价（万元）</th></tr></thead>
+          <tbody id="priceBody"></tbody>
+          <tfoot><tr><td colspan="4" style="text-align:right">投标总报价：</td><td class="total-cell" id="totalPrice">0.00 万元</td></tr></tfoot>
+        </table>
+        <p class="note">* 单价为含税价，包含设备生产、运输、安装指导、调试、培训、质保等全部费用</p>
+      </div>
+
+      <!-- 投标信息 -->
+      <div class="card">
+        <div class="section-title"><span class="icon">📝</span> 五、投标文件信息</div>
+        <div class="form-grid">
+          <div class="form-group full"><label>项目名称</label><input type="text" id="projectName" value="辽河油田欢喜岭采油厂注水站B级水注水泵改造项目"></div>
+          <div class="form-group full"><label>招标单位</label><input type="text" id="bidder" value="辽河油田欢喜岭采油厂"></div>
+          <div class="form-group full"><label>投标单位</label><input type="text" id="tenderer" placeholder="投标公司名称"></div>
+          <div class="form-group"><label>法定代表人</label><input type="text" id="legalPerson" placeholder="姓名"></div>
+          <div class="form-group"><label>身份证号</label><input type="text" id="legalId" placeholder="身份证号码"></div>
+          <div class="form-group"><label>职务</label><input type="text" id="legalTitle" placeholder="如：总经理"></div>
+          <div class="form-group"><label>性别</label><select id="legalGender"><option value="男">男</option><option value="女">女</option></select></div>
+          <div class="form-group"><label>投标总报价（含税） <span class="unit">元</span></label><input type="number" id="totalBidYuan" placeholder="自动计算或手动输入" step="1"></div>
+          <div class="form-group"><label>报价大写</label><input type="text" id="totalBidChinese" placeholder="自动生成或手动输入"></div>
+          <div class="form-group"><label>税率 <span class="unit">%</span></label><input type="number" id="taxRate" value="13"></div>
+          <div class="form-group"><label>供货期 <span class="unit">工作日</span></label><input type="number" id="deliveryDays" value="60"></div>
+          <div class="form-group"><label>质保期 <span class="unit">年</span></label><input type="number" id="warrantyYears" value="2"></div>
+          <div class="form-group"><label>投标日期</label><input type="date" id="bidDate"></div>
+        </div>
+      </div>
+
+      <button class="btn-calc" onclick="calculate()">🚀 开始测算</button>
+
+      <!-- RESULTS (FREE) -->
+      <div class="results" id="results">
+        <div class="card">
+          <div class="result-highlight">
+            <div class="big-num" id="savingRate">0<span class="pct">%</span></div>
+            <div class="label">综合节电率</div>
+          </div>
+          <div class="metric-row three">
+            <div class="metric-card"><div class="value good" id="dailySave">0</div><div class="desc">日节电量 kWh</div></div>
+            <div class="metric-card"><div class="value good" id="yearlySave">0</div><div class="desc">年节电量 万kWh</div></div>
+            <div class="metric-card"><div class="value warn" id="yearlyMoney">0</div><div class="desc">年节省电费 万元</div></div>
+          </div>
+        </div>
+
+        <!-- PAYWALL for detailed content -->
+        <div id="paywallSection"></div>
+
+        <button class="btn-export" onclick="window.print()">📄 打印/导出测算报告</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="page" id="page-history">
+    <div class="container container-wide">
+      <h2 style="font-size:22px;font-weight:700;margin-bottom:20px;color:var(--primary-dark)">📋 测算历史</h2>
+      <div id="historyContent"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ==================== STATE ====================
+let currentUser = JSON.parse(localStorage.getItem('pump_user') || 'null');
+let lastCalcData = null;
+let isUnlocked = false;
+
+// ==================== ROUTING ====================
+function navigate(page) {
+  if (page === 'history' && !currentUser) { navigate('auth'); showToast('请先登录查看测算历史'); return; }
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('show'));
+  const el = document.getElementById('page-' + page);
+  if (el) el.classList.add('show');
+  // Update nav
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    a.classList.toggle('active', a.dataset.page === page);
+  });
+  // Close mobile menu
+  document.getElementById('navLinks').classList.remove('open');
+  window.scrollTo(0, 0);
+  if (page === 'history') renderHistory();
+}
+
+function toggleMenu() {
+  document.getElementById('navLinks').classList.toggle('open');
+}
+
+// ==================== NAV ====================
+function renderNav() {
+  const right = document.getElementById('navRight');
+  if (currentUser) {
+    const phone = currentUser.phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2');
+    right.innerHTML = `<span class="user-info">📱 ${phone}</span><button class="btn-nav danger" onclick="doLogout()">退出</button>`;
+  } else {
+    right.innerHTML = `<button class="btn-nav outline" onclick="navigate('auth')">登录 / 注册</button>`;
+  }
+}
+
+// ==================== AUTH ====================
+function switchAuthTab(tab, btn) {
+  btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('auth-login').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('auth-register').style.display = tab === 'register' ? 'block' : 'none';
+  document.getElementById('loginError').textContent = '';
+  document.getElementById('regError').textContent = '';
+}
+
+function getUsers() { return JSON.parse(localStorage.getItem('pump_users') || '{}'); }
+function saveUsers(u) { localStorage.setItem('pump_users', JSON.stringify(u)); }
+
+function doLogin() {
+  const phone = document.getElementById('loginPhone').value.trim();
+  const pwd = document.getElementById('loginPwd').value;
+  const err = document.getElementById('loginError');
+  if (!/^1\d{10}$/.test(phone)) { err.textContent = '请输入正确的手机号'; return; }
+  if (pwd.length < 6) { err.textContent = '密码至少6位'; return; }
+  const users = getUsers();
+  if (!users[phone]) { err.textContent = '该手机号未注册'; return; }
+  if (users[phone].password !== pwd) { err.textContent = '密码错误'; return; }
+  currentUser = { phone, regTime: users[phone].regTime };
+  localStorage.setItem('pump_user', JSON.stringify(currentUser));
+  renderNav();
+  showToast('✅ 登录成功');
+  navigate('calc');
+}
+
+function doRegister() {
+  const phone = document.getElementById('regPhone').value.trim();
+  const pwd = document.getElementById('regPwd').value;
+  const pwd2 = document.getElementById('regPwd2').value;
+  const err = document.getElementById('regError');
+  if (!/^1\d{10}$/.test(phone)) { err.textContent = '请输入正确的手机号'; return; }
+  if (pwd.length < 6) { err.textContent = '密码至少6位'; return; }
+  if (pwd !== pwd2) { err.textContent = '两次密码不一致'; return; }
+  const users = getUsers();
+  if (users[phone]) { err.textContent = '该手机号已注册'; return; }
+  users[phone] = { password: pwd, regTime: Date.now() };
+  saveUsers(users);
+  showToast('✅ 注册成功，请登录');
+  switchAuthTab('login', document.querySelector('.tab-row button'));
+  document.getElementById('loginPhone').value = phone;
+  document.getElementById('loginPwd').value = '';
+  document.getElementById('regError').textContent = '';
+}
+
+function doLogout() {
+  currentUser = null;
+  localStorage.removeItem('pump_user');
+  isUnlocked = false;
+  renderNav();
+  navigate('home');
+  showToast('已退出登录');
+}
+
+// ==================== PRICE TABLE ====================
+const priceItems = [
+  { name: '柱塞式注水泵主机', spec: '一用一备', qty: 2, unit: '' },
+  { name: '配套电机', spec: '与泵一对一配套', qty: 2, unit: '' },
+  { name: '变频器及控制柜', spec: '适配800kW电机', qty: 2, unit: '' },
+  { name: '配套附件', spec: '管件、密封件、仪表等', qty: 2, unit: '' },
+  { name: '安装指导服务', spec: '含技术人员差旅费', qty: 1, unit: '' },
+  { name: '操作人员培训', spec: '培训至独立上岗', qty: 1, unit: '' },
+  { name: '质保期服务', spec: '自验收合格起', qty: 1, unit: '' },
+];
+
+function initPriceTable() {
+  const tbody = document.getElementById('priceBody');
+  priceItems.forEach((item, i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${i+1}</td><td>${item.name}<br><small style="color:#94a3b8">${item.spec}</small></td>
+      <td><input type="number" id="pi_qty_${i}" value="${item.qty}" min="1" onchange="updatePriceTotal()"></td>
+      <td><input type="number" id="pi_unit_${i}" placeholder="单价" step="0.01" onchange="updatePriceTotal()"></td>
+      <td id="pi_total_${i}" style="font-weight:600">0.00</td>`;
+    tbody.appendChild(tr);
+  });
+  document.getElementById('totalBidYuan').addEventListener('input', function() {
+    if (this.value) document.getElementById('totalBidChinese').value = numToChinese(this.value);
+  });
+}
+
+function updatePriceTotal() {
+  let total = 0;
+  priceItems.forEach((_, i) => {
+    const qty = +document.getElementById(`pi_qty_${i}`).value || 0;
+    const unit = +document.getElementById(`pi_unit_${i}`).value || 0;
+    const sub = qty * unit;
+    document.getElementById(`pi_total_${i}`).textContent = sub.toFixed(2);
+    total += sub;
+  });
+  document.getElementById('totalPrice').textContent = total.toFixed(2) + ' 万元';
+  const yuan = Math.round(total * 10000);
+  document.getElementById('totalBidYuan').value = yuan;
+  document.getElementById('totalBidChinese').value = numToChinese(yuan);
+  return total;
+}
+
+function numToChinese(n) {
+  n = Math.round(n);
+  if (n === 0) return '零元整';
+  const digits = '零壹贰叁肆伍陆柒捌玖';
+  const units = ['', '拾', '佰', '仟'];
+  const bigUnits = ['', '万', '亿'];
+  let neg = n < 0; if (neg) n = -n;
+  let intPart = Math.floor(n);
+  let decPart = Math.round((n - intPart) * 100);
+  let jiao = Math.floor(decPart / 10), fen = decPart % 10;
+  let result = '';
+  if (intPart === 0) { result = '零'; }
+  else {
+    let str = intPart.toString(), groups = [];
+    while (str.length > 0) { groups.unshift(str.slice(-4)); str = str.slice(0, -4); }
+    groups.forEach((g, gi) => {
+      let gStr = '', zeroFlag = false;
+      for (let i = 0; i < g.length; i++) {
+        let d = +g[i], unitIdx = g.length - 1 - i;
+        if (d === 0) zeroFlag = true;
+        else { if (zeroFlag) { gStr += '零'; zeroFlag = false; } gStr += digits[d] + units[unitIdx]; }
+      }
+      if (gStr) result += gStr + bigUnits[groups.length - 1 - gi];
+    });
+  }
+  result += '元';
+  if (jiao === 0 && fen === 0) result += '整';
+  else { if (jiao > 0) result += digits[jiao] + '角'; if (fen > 0) result += digits[fen] + '分'; }
+  return (neg ? '负' : '') + result;
+}
+
+// ==================== AUTO CALC ====================
+function autoCalcNew() {
+  const avgFlow = +document.getElementById('avgFlow').value;
+  const inPressure = +document.getElementById('inPressure').value || 0;
+  const outPressure = +document.getElementById('outPressure').value || 0;
+  const pumpEff = +document.getElementById('pumpEff').value || 0.93;
+  if (avgFlow > 0 && outPressure > 0) {
+    const newFlow = avgFlow * 1.5;
+    const newPressure = outPressure + 1;
+    const shaftPower = newFlow * (newPressure - inPressure) / 3.6 / pumpEff;
+    document.getElementById('ratedFlow').value = newFlow.toFixed(1);
+    document.getElementById('ratedPressure').value = newPressure.toFixed(1);
+    document.getElementById('motorPower').value = Math.round(shaftPower * 1.1);
+  }
+}
+
+// ==================== MAIN CALC ====================
+function calculate() {
+  const v = id => +document.getElementById(id).value;
+  const dailyWater = v('dailyWater'), dailyPower = v('dailyPower'), avgFlow = v('avgFlow');
+  const avgInputPower = v('avgInputPower'), inPressure = v('inPressure'), outPressure = v('outPressure');
+  const motorEff = v('motorEff'), vfdEff = v('vfdEff'), pumpEff = v('pumpEff');
+  const runDays = v('runDays'), elecPrice = v('elecPrice');
+  if (!dailyWater||!dailyPower||!avgFlow||!avgInputPower||outPressure===undefined) { showToast('请填写所有原设备运行数据'); return; }
+
+  const unitCostOld = dailyPower / dailyWater;
+  const unitMPaOld = dailyPower / (dailyWater * outPressure);
+  const pShaft = avgFlow * (outPressure - inPressure) / 3.6 / pumpEff;
+  const pMotor = pShaft / motorEff;
+  const pVfd = pMotor / vfdEff;
+  const unitCostNew = pVfd / avgFlow;
+  const unitMPaNew = (pVfd * 24) / (outPressure * dailyWater);
+  const dailySave = (avgInputPower - pVfd) * 24;
+  const savingRate = dailySave / dailyPower;
+  const yearlySave = dailySave * runDays;
+  const yearlyMoney = yearlySave * elecPrice;
+  const totalInvest = updatePriceTotal();
+  const paybackYears = totalInvest > 0 ? totalInvest / (yearlyMoney / 10000) : 0;
+  const paybackDays = paybackYears * 365;
+  const roi5 = yearlyMoney / 10000 * 5 - totalInvest;
+  const coalSave = yearlySave * 0.4 / 1000;
+  const co2 = coalSave * 2.493;
+
+  // Update free results
+  document.getElementById('savingRate').innerHTML = (savingRate*100).toFixed(1)+'<span class="pct">%</span>';
+  document.getElementById('dailySave').textContent = dailySave.toFixed(0);
+  document.getElementById('yearlySave').textContent = (yearlySave/10000).toFixed(1);
+  document.getElementById('yearlyMoney').textContent = (yearlyMoney/10000).toFixed(1);
+
+  lastCalcData = { savingRate, dailySave, yearlySave, yearlyMoney, totalInvest, paybackYears, paybackDays, roi5, unitMPaOld, unitMPaNew, unitCostOld, unitCostNew, pShaft, pMotor, pVfd, coalSave, co2 };
+
+  // Save to history
+  saveCalcHistory({ time: Date.now(), projectName: document.getElementById('projectName').value, savingRate, yearlyMoney, ...lastCalcData });
+
+  // Render paywall section
+  renderPaywallSection();
+  document.getElementById('results').classList.add('show');
+  setTimeout(() => document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'}), 100);
+}
+
+// ==================== PAYWALL ====================
+function renderPaywallSection() {
+  const el = document.getElementById('paywallSection');
+  if (isUnlocked) {
+    el.innerHTML = buildDetailCards();
+    return;
+  }
+  el.innerHTML = `
+    <div class="paywall">
+      <h3>🔓 解锁详细计算 & 投标文件</h3>
+      <p>解锁后可查看完整计算过程并一键生成投标文件</p>
+      <div class="pay-plans">
+        <div class="pay-plan selected" onclick="selectPlan(this,'single')">
+          <div class="plan-name">单次解锁</div>
+          <div class="price">¥9.9<small>/次</small></div>
+          <div class="plan-desc">本次测算详细内容</div>
+        </div>
+        <div class="pay-plan" onclick="selectPlan(this,'pack20')">
+          <div class="plan-name">20次套餐</div>
+          <div class="price">¥99<small>/20次</small></div>
+          <div class="plan-desc">平均¥4.95/次 更划算</div>
+        </div>
+      </div>
+      <button class="btn-pay" onclick="doPay()">💳 立即解锁</button>
+    </div>
+    <div style="position:relative">
+      ${buildDetailCards()}
+      <div style="position:absolute;inset:0;background:rgba(255,255,255,.75);backdrop-filter:blur(4px);border-radius:var(--radius);z-index:3"></div>
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:4;text-align:center">
+        <div style="font-size:32px;margin-bottom:8px">🔒</div>
+        <div style="color:#92400e;font-weight:600">付费内容</div>
+        <div style="color:#a16207;font-size:13px">解锁后查看</div>
+      </div>
+    </div>`;
+}
+
+let selectedPlan = 'single';
+function selectPlan(el, plan) {
+  document.querySelectorAll('.pay-plan').forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedPlan = plan;
+}
+
+function doPay() {
+  isUnlocked = true;
+  renderPaywallSection();
+  showToast('🎉 解锁成功！即可查看详细计算和生成投标文件');
+}
+
+function buildDetailCards() {
+  const d = lastCalcData || {};
+  return `
+    <!-- 投资回收 -->
+    <div class="card">
+      <div class="section-title"><span class="icon">💰</span> 投资回收分析</div>
+      <div class="metric-row">
+        <div class="metric-card"><div class="value" style="color:var(--primary)">${d.totalInvest?.toFixed(1)||'0'}</div><div class="desc">总投资额 万元</div></div>
+        <div class="metric-card"><div class="value good">${d.paybackYears?.toFixed(1)||'0'}</div><div class="desc">投资回收期 年</div></div>
+        <div class="metric-card"><div class="value good">${d.paybackDays?.toFixed(0)||'0'}</div><div class="desc">投资回收期 天</div></div>
+        <div class="metric-card"><div class="value warn">${d.roi5?.toFixed(1)||'0'}</div><div class="desc">5年净收益 万元</div></div>
+      </div>
+      <div class="note">* 投资回收期 = 总投资额 ÷ 年节省电费，5年净收益 = 5年年节省电费 - 总投资额</div>
+    </div>
+    <!-- 单耗对比 -->
+    <div class="card">
+      <div class="section-title"><span class="icon">📉</span> 单耗对比</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:8px">吨兆帕耗电 (kWh/t·MPa)</div>
+      <div class="compare-bar"><span style="width:48px">改造前</span><div class="bar-bg"><div class="bar-old" id="barOld" style="width:70%">${d.unitMPaOld?.toFixed(2)||'-'}</div></div></div>
+      <div class="compare-bar"><span style="width:48px">改造后</span><div class="bar-bg"><div class="bar-new" id="barNew" style="width:30%">${d.unitMPaNew?.toFixed(2)||'-'}</div></div></div>
+      <div style="text-align:center;font-size:13px;color:var(--text2);margin-top:4px">改造前: <b>${d.unitMPaOld?.toFixed(3)||'-'}</b> → 改造后: <b style="color:var(--success)">${d.unitMPaNew?.toFixed(3)||'-'}</b></div>
+    </div>
+    <!-- 详细计算 -->
+    <div class="card">
+      <div class="section-title"><span class="icon">📋</span> 详细计算过程</div>
+      <table class="detail-table">
+        <thead><tr><th>项目</th><th>数值</th></tr></thead>
+        <tbody>
+          <tr><td>原设备单耗 (kWh/m³)</td><td>${d.unitCostOld?.toFixed(2)||'-'}</td></tr>
+          <tr><td>原设备吨兆帕耗电 (kWh/t·MPa)</td><td>${d.unitMPaOld?.toFixed(3)||'-'}</td></tr>
+          <tr><td>泵轴功率 P轴 (kW)</td><td>${d.pShaft?.toFixed(2)||'-'}</td></tr>
+          <tr><td>电机输入功率 P电 (kW)</td><td>${d.pMotor?.toFixed(2)||'-'}</td></tr>
+          <tr><td>变频器输入功率 P变 (kW)</td><td>${d.pVfd?.toFixed(2)||'-'}</td></tr>
+          <tr><td>改造后注水单耗 (kWh/m³)</td><td>${d.unitCostNew?.toFixed(2)||'-'}</td></tr>
+          <tr><td>改造后吨兆帕耗电 (kWh/t·MPa)</td><td>${d.unitMPaNew?.toFixed(3)||'-'}</td></tr>
+          <tr><td>日节电量 (kWh)</td><td>${d.dailySave?.toFixed(2)||'-'}</td></tr>
+          <tr><td>节电率 (%)</td><td>${d.savingRate !== undefined ? (d.savingRate*100).toFixed(2)+'%' : '-'}</td></tr>
+          <tr><td>年节电量 (万kWh)</td><td>${d.yearlySave ? (d.yearlySave/10000).toFixed(2) : '-'}</td></tr>
+          <tr><td>年节电费 (万元)</td><td>${d.yearlyMoney ? (d.yearlyMoney/10000).toFixed(2) : '-'}</td></tr>
+          <tr><td>节约标准煤 (吨/年)</td><td>${d.coalSave?.toFixed(1)||'-'}</td></tr>
+          <tr><td>减排CO₂ (吨/年)</td><td>${d.co2?.toFixed(1)||'-'}</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <button class="btn-doc" onclick="generateBidDoc()">📝 一键生成投标文件（Word）</button>`;
+}
+
+// ==================== HISTORY ====================
+function saveCalcHistory(record) {
+  if (!currentUser) return;
+  const key = 'pump_history_' + currentUser.phone;
+  const list = JSON.parse(localStorage.getItem(key) || '[]');
+  record.id = Date.now();
+  list.unshift(record);
+  if (list.length > 50) list.length = 50;
+  localStorage.setItem(key, JSON.stringify(list));
+}
+
+function getHistory() {
+  if (!currentUser) return [];
+  return JSON.parse(localStorage.getItem('pump_history_' + currentUser.phone) || '[]');
+}
+
+function renderHistory() {
+  const list = getHistory();
+  const el = document.getElementById('historyContent');
+  if (!list.length) {
+    el.innerHTML = `<div class="empty-state"><div class="icon">📭</div><p>暂无测算记录</p><button class="btn-auth" style="max-width:200px;margin:16px auto 0" onclick="navigate('calc')">去测算</button></div>`;
+    return;
+  }
+  el.innerHTML = `<div class="history-list">${list.map(r => {
+    const date = new Date(r.time).toLocaleString('zh-CN');
+    return `<div class="history-item">
+      <div class="hi-left">
+        <div class="hi-project">${r.projectName || '未命名项目'}</div>
+        <div class="hi-time">${date}</div>
+      </div>
+      <div class="hi-metrics">
+        <div class="hi-metric"><div class="val">${(r.savingRate*100).toFixed(1)}%</div><div class="lbl">节电率</div></div>
+        <div class="hi-metric"><div class="val">${(r.yearlyMoney/10000).toFixed(1)}</div><div class="lbl">年省电费(万)</div></div>
+      </div>
+      <div class="hi-actions">
+        <button class="btn-sm primary" onclick="viewHistoryDetail(${r.id})">查看</button>
+        <button class="btn-sm danger" onclick="deleteHistory(${r.id})">删除</button>
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function viewHistoryDetail(id) {
+  const list = getHistory();
+  const r = list.find(x => x.id === id);
+  if (!r) return;
+  const date = new Date(r.time).toLocaleString('zh-CN');
+  document.getElementById('modalContent').innerHTML = `
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h3>${r.projectName || '未命名项目'}</h3>
+    <p style="color:var(--text2);font-size:13px;margin-bottom:16px">${date}</p>
+    <div class="metric-row">
+      <div class="metric-card"><div class="value good">${(r.savingRate*100).toFixed(1)}%</div><div class="desc">节电率</div></div>
+      <div class="metric-card"><div class="value good">${r.dailySave?.toFixed(0)||'-'}</div><div class="desc">日节电量 kWh</div></div>
+    </div>
+    <div class="metric-row">
+      <div class="metric-card"><div class="value good">${(r.yearlySave/10000).toFixed(1)||'-'}</div><div class="desc">年节电量 万kWh</div></div>
+      <div class="metric-card"><div class="value warn">${(r.yearlyMoney/10000).toFixed(1)||'-'}</div><div class="desc">年省电费 万元</div></div>
+    </div>
+    <div class="metric-row">
+      <div class="metric-card"><div class="value" style="color:var(--primary)">${r.totalInvest?.toFixed(1)||'-'}</div><div class="desc">总投资 万元</div></div>
+      <div class="metric-card"><div class="value good">${r.paybackYears?.toFixed(1)||'-'}</div><div class="desc">回收期 年</div></div>
+    </div>`;
+  document.getElementById('modalOverlay').classList.add('show');
+}
+
+function deleteHistory(id) {
+  if (!confirm('确认删除此条记录？')) return;
+  const key = 'pump_history_' + currentUser.phone;
+  let list = JSON.parse(localStorage.getItem(key) || '[]');
+  list = list.filter(x => x.id !== id);
+  localStorage.setItem(key, JSON.stringify(list));
+  renderHistory();
+  showToast('已删除');
+}
+
+function closeModal() { document.getElementById('modalOverlay').classList.remove('show'); }
+
+// ==================== GENERATE BID DOC ====================
+function generateBidDoc() {
+  if (!isUnlocked) { showToast('请先解锁后再生成投标文件'); return; }
+  const g = id => document.getElementById(id).value;
+  const projectName = g('projectName') || '__________项目';
+  const bidder = g('bidder') || '____________________';
+  const tenderer = g('tenderer') || '____________________';
+  const legalPerson = g('legalPerson') || '__________';
+  const legalId = g('legalId') || '____________________';
+  const legalTitle = g('legalTitle') || '__________';
+  const legalGender = g('legalGender') || '男';
+  const totalBid = g('totalBidYuan') || '__________';
+  const totalBidCN = g('totalBidChinese') || '____________________';
+  const taxRate = g('taxRate') || '13';
+  const deliveryDays = g('deliveryDays') || '__________';
+  const warrantyYears = g('warrantyYears') || '__________';
+  const bidDateVal = g('bidDate');
+  const [bidYear, bidMonth, bidDay] = bidDateVal ? bidDateVal.split('-') : ['____','__','__'];
+  const oldName = g('oldName') || '原设备', newName = g('newName') || '新式柱塞泵';
+  const dailyWater = g('dailyWater'), dailyPower = g('dailyPower');
+  const avgFlow = g('avgFlow'), avgInputPower = g('avgInputPower');
+  const inPressure = g('inPressure'), outPressure = g('outPressure');
+  const ratedFlow = g('ratedFlow'), ratedPressure = g('ratedPressure'), motorPower = g('motorPower');
+  const motorEff = +g('motorEff'), vfdEff = +g('vfdEff'), pumpEff = +g('pumpEff');
+  const runDays = g('runDays'), elecPrice = g('elecPrice');
+  const pShaft = avgFlow * (outPressure - inPressure) / 3.6 / pumpEff;
+  const pMotor = pShaft / motorEff, pVfd = pMotor / vfdEff;
+  const dailySave = (avgInputPower - pVfd) * 24;
+  const savingRate = dailySave / dailyPower * 100;
+  const yearlySave = dailySave * runDays, yearlyMoney = yearlySave * elecPrice;
+  const coalSave = yearlySave * 0.4 / 1000, co2 = coalSave * 2.493;
+  let priceRows = '';
+  priceItems.forEach((item, i) => {
+    const qty = document.getElementById(`pi_qty_${i}`).value || item.qty;
+    const unit = document.getElementById(`pi_unit_${i}`).value || '-';
+    priceRows += `<tr><td style="text-align:center">${i+1}</td><td>${item.name}</td><td style="text-align:center">${item.spec}</td><td style="text-align:center">${qty}</td><td style="text-align:center">${unit}</td><td style="text-align:center">${(qty*unit).toFixed(2)}</td></tr>`;
+  });
+
+  const html = `<!DOCTYPE html><html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head><meta charset="UTF-8"><title>${projectName}柱塞泵投标文件</title>
+<style>
+body{font-family:'宋体',SimSun,serif;font-size:14pt;line-height:1.8;margin:2.5cm 3cm}
+h1{font-size:22pt;text-align:center;font-family:'黑体',SimHei,sans-serif;margin-bottom:20pt}
+h2{font-size:16pt;font-family:'黑体',SimHei,sans-serif;margin-top:24pt;margin-bottom:12pt}
+h3{font-size:14pt;font-family:'黑体',SimHei,sans-serif;margin-top:16pt;margin-bottom:8pt}
+p{margin:6pt 0;text-indent:2em}
+.no-indent{text-indent:0}
+.center{text-align:center}
+table{border-collapse:collapse;width:100%;margin:10pt 0;font-size:12pt}
+th,td{border:1px solid #000;padding:6pt 8pt;text-align:center;vertical-align:middle}
+th{background:#f0f0f0;font-weight:bold}
+.left-align td{border:1px solid #000;padding:6pt 8pt}
+.left-align td:first-child{text-align:left}
+.sig-line{display:inline-block;width:200pt;border-bottom:1px solid #000}
+.page-break{page-break-before:always}
+.subtitle{text-align:center;font-size:16pt;margin:10pt 0;font-family:'黑体',SimHei,sans-serif}
+</style></head><body>
+<h1>${projectName}<br>柱塞泵投标文件</h1>
+<table style="margin:0 auto;width:70%;border:none;font-size:14pt"><tbody>
+<tr><td style="border:none;text-align:left">投标单位：<span class="sig-line">${tenderer}</span></td></tr>
+<tr><td style="border:none;text-align:left">法定代表人：<span class="sig-line">${legalPerson}</span></td></tr>
+<tr><td style="border:none;text-align:left">投标日期：<span class="sig-line">${bidYear}年${bidMonth}月${bidDay}日</span></td></tr>
+</tbody></table>
+<div class="page-break"></div>
+<div class="subtitle">目 录</div>
+<p class="no-indent">1. 投标函</p><p class="no-indent">2. 法定代表人身份证明书</p><p class="no-indent">3. 授权委托书</p>
+<p class="no-indent">4. 投标报价表</p><p class="no-indent">5. 技术响应文件</p><p class="no-indent">6. 设备技术参数及性能说明</p>
+<p class="no-indent">7. 供货范围及交货期承诺</p><p class="no-indent">8. 质量保证及售后服务承诺</p>
+<p class="no-indent">9. 企业资质证明文件</p><p class="no-indent">10. 类似项目业绩证明</p><p class="no-indent">11. 节能效果核算说明</p>
+<p class="no-indent">12. 施工及安装配合方案</p>
+<div class="page-break"></div>
+<h2>一、投标函</h2>
+<p class="no-indent">致：${bidder}</p>
+<p>1. 根据贵方${projectName}的招标要求，我方（${tenderer}）已仔细研究全部招标文件内容，自愿参加本项目投标。</p>
+<p>2. 我方承诺按招标文件要求，提供柱塞式注水泵及配套服务，设备额定流量${ratedFlow}m³/h，额定工作压力${ratedPressure}MPa，匹配电机功率${motorPower}kW。</p>
+<p>3. 我方本次投标总报价为人民币<b>${totalBid}元（大写：${totalBidCN}）</b>，报价包含设备制造、运输、安装指导、调试、培训、质保期内服务等全部费用。</p>
+<p>4. 我方承诺供货期为合同签订后<b>${deliveryDays}个工作日</b>内完成设备生产、运输至项目现场，并配合完成安装调试直至设备正常投运。</p>
+<p>5. 我方承诺设备质保期为<b>${warrantyYears}年</b>（自设备验收合格之日起计算）。</p>
+<p>6. 我方确认本投标文件内容真实有效，若中标，将严格按照招标文件及投标文件约定履行合同义务。</p>
+<p class="no-indent" style="margin-top:20pt">投标单位（盖章）：<span class="sig-line"></span></p>
+<p class="no-indent">法定代表人/授权代表人（签字或盖章）：<span class="sig-line"></span></p>
+<p class="no-indent">日期：<span class="sig-line">${bidYear}年${bidMonth}月${bidDay}日</span></p>
+<div class="page-break"></div>
+<h2>二、法定代表人身份证明书</h2>
+<p class="no-indent">致：${bidder}</p>
+<p>兹证明<b>${legalPerson}</b>（姓名），性别<b>${legalGender}</b>，身份证号码<b>${legalId}</b>，系我方（${tenderer}）的法定代表人，职务为<b>${legalTitle}</b>，有权代表我方参加本项目投标活动。</p>
+<p class="no-indent">特此证明。</p>
+<p class="no-indent" style="margin-top:20pt">投标单位（盖章）：<span class="sig-line"></span></p>
+<p class="no-indent">日期：<span class="sig-line">${bidYear}年${bidMonth}月${bidDay}日</span></p>
+<div class="page-break"></div>
+<h2>三、授权委托书</h2>
+<p class="no-indent">致：${bidder}</p>
+<p>本授权书声明：我方（${tenderer}）法定代表人<b>${legalPerson}</b>授权<b>__________</b>为我方授权代表人，全权代表我方参加${projectName}的投标活动。</p>
+<p class="no-indent" style="margin-top:20pt">法定代表人（签字或盖章）：<span class="sig-line"></span></p>
+<p class="no-indent">投标单位（盖章）：<span class="sig-line"></span></p>
+<div class="page-break"></div>
+<h2>四、投标报价表</h2>
+<table><thead><tr><th>序号</th><th>设备/服务名称</th><th>规格/备注</th><th>数量</th><th>单价（万元）</th><th>合价（万元）</th></tr></thead>
+<tbody>${priceRows}<tr style="font-weight:bold"><td colspan="5" style="text-align:right">投标总报价：</td><td>${totalBid}元</td></tr></tbody></table>
+<div class="page-break"></div>
+<h2>五、技术响应文件</h2>
+<h3>技术要求响应表</h3>
+<table class="left-align"><thead><tr><th>招标技术要求</th><th>投标响应内容</th><th>响应情况</th></tr></thead><tbody>
+<tr><td>泵型：柱塞式注水泵</td><td>7柱塞式注水泵</td><td>完全响应</td></tr>
+<tr><td>额定流量：${ratedFlow}m³/h</td><td>额定流量${ratedFlow}m³/h</td><td>完全响应</td></tr>
+<tr><td>额定工作压力：${ratedPressure}MPa</td><td>额定工作压力${ratedPressure}MPa</td><td>完全响应</td></tr>
+<tr><td>匹配电机功率：${motorPower}kW</td><td>配套电机功率${motorPower}kW</td><td>完全响应</td></tr>
+<tr><td>泵效率：≥93%</td><td>投标柱塞泵效率≥${(pumpEff*100).toFixed(0)}%</td><td>完全响应</td></tr>
+</tbody></table>
+<p>本投标文件所有技术内容均<b>无偏离</b>。</p>
+<div class="page-break"></div>
+<h2>十一、节能效果核算说明</h2>
+<p>本项目投标柱塞泵按${projectName}平均工况（平均流量${avgFlow}m³/h，出口压力${outPressure}MPa，进水压力${inPressure}MPa）核算节能效果：</p>
+<h3>核算结果</h3>
+<p class="no-indent">1. 泵轴功率：<b>${pShaft.toFixed(2)}kW</b>；</p>
+<p class="no-indent">2. 变频器输入功率：<b>${pVfd.toFixed(2)}kW</b>；</p>
+<p class="no-indent">3. 日节电量：<b>${dailySave.toFixed(2)}kWh</b>；</p>
+<p class="no-indent">4. 年节电量：<b>${yearlySave.toFixed(2)}kWh</b>；</p>
+<p class="no-indent">5. 年节电费：<b>${yearlyMoney.toFixed(2)}元（约${(yearlyMoney/10000).toFixed(0)}万元）</b>；</p>
+<p class="no-indent">6. 节电率：<b>${savingRate.toFixed(2)}%</b>；</p>
+<p class="no-indent">7. 节约标准煤：约<b>${coalSave.toFixed(1)}吨</b>；</p>
+<p class="no-indent">8. 减排二氧化碳：约<b>${co2.toFixed(1)}吨</b>。</p>
+<div class="page-break"></div>
+<div class="subtitle" style="margin-top:60pt">投标文件签署页</div>
+<p style="margin-top:20pt">本投标文件内容真实、完整、有效。</p>
+<p class="no-indent" style="margin-top:40pt">法定代表人/授权代表人（签字或盖章）：<span class="sig-line"></span></p>
+<p class="no-indent" style="margin-top:16pt">投标单位（盖章）：<span class="sig-line"></span></p>
+<p class="no-indent" style="margin-top:16pt">日期：<span class="sig-line">${bidYear}年${bidMonth}月${bidDay}日</span></p>
+</body></html>`;
+
+  const blob = new Blob(['\ufeff' + html], { type: 'application/msword' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `${projectName}_柱塞泵投标文件.doc`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('✅ 投标文件已生成并开始下载！');
+}
+
+// ==================== TOAST ====================
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ==================== INIT ====================
+initPriceTable();
+document.getElementById('bidDate').value = new Date().toISOString().split('T')[0];
+renderNav();
+</script>
+</body>
+</html>
