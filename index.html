@@ -639,6 +639,15 @@ function autoCalcNew() {
   const ratedPressureVal = outPressure > 0 ? (outPressure + 1).toFixed(1) : '—';
   document.getElementById('guideRatedFlow').textContent = ratedFlowVal;
   document.getElementById('guideRatedPressure').textContent = ratedPressureVal;
+  // 电机功率随流量变化（按额定流量和额定压力计算）
+  if (avgFlow > 0 && outPressure > 0) {
+    const rFlow = avgFlow * 1.5;
+    const rPressure = outPressure + 1;
+    const mEff = +document.getElementById('motorEff').value || 0.95;
+    const pEff = +document.getElementById('pumpEff').value || 0.93;
+    const shaftPower = rFlow * (rPressure - inPressure) / 3.6 / pEff;
+    document.getElementById('motorPower').value = Math.round(shaftPower / mEff * 1.1);
+  }
 }
 
 // ==================== MAIN CALC ====================
