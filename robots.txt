@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://jeeftang.github.io/Energy-saving-Calculation/sitemap.xml
