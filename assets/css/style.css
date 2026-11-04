@@ -237,3 +237,13 @@ form.enquiry input,form.enquiry textarea,form.enquiry select{
   .note{color:#444}
   a{color:#000}
 }
+
+/* mobile navigation */
+@media(max-width:720px){
+  .menu-toggle{display:inline-flex;align-items:center;justify-content:center;margin-left:auto;width:42px;height:42px;border:1px solid var(--line);background:#fff;border-radius:9px;font-size:19px;cursor:pointer;color:var(--ink)}
+  .nav ul{display:none;position:absolute;top:70px;left:0;right:0;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 12px 24px rgba(12,26,38,.08);flex-direction:column;gap:0;margin:0;padding:8px 22px 16px}
+  .nav ul.open{display:flex}
+  .nav ul li{padding:10px 0;border-bottom:1px solid var(--line)}
+  .nav ul li:last-child{border-bottom:0}
+  .nav .cta{margin-left:10px;padding:10px 14px;font-size:13.5px}
+}
