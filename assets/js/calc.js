@@ -152,13 +152,13 @@
     var kw = val("t5_kw"), capexPerKW = val("t5_capex");
     var cur = ($("t5_cur") || {}).value || "MYR";
     var tariff = val("t5_tariff"), fx = val("t5_fx") || 1;
-    var hours = val("t5_hours"), om = val("t5_om"), omfix = val("t5_omfix");
+    var hours = val("t5_hours"), om = val("t5_om"), omfix = val("t5_omfix"), use = val("t5_use");
     var disc = val("t5_disc") / 100;
 
     var capex = kw * capexPerKW;
     var tariffUSD = tariff / fx;
     var gen = kw * hours;
-    var revUSD = gen * tariffUSD;
+    var revUSD = gen * (use / 100) * tariffUSD;
     var opexUSD = gen * om + omfix;
     var netUSD = revUSD - opexUSD;
     var payback = netUSD > 0 ? capex / netUSD : Infinity;
@@ -182,8 +182,9 @@
     set("t5_lcoe", "US$ " + nf(lcoe, 3) + "/kWh");
 
     var msgs = [];
+    if (use > 90) msgs.push("Assuming almost all output displaces bought power is optimistic unless the mill runs a steady 24-hour load.");
     if (capexPerKW < 600) msgs.push("Capex below US$600/kW is likely engine-only, not a complete plant — civils, gas treatment and grid connection are usually excluded.");
-    if (payback < 1.5) msgs.push("Payback under 1.5 years usually means the tariff assumption is too high or capex is incomplete.");
+    if (payback < 2) msgs.push("Payback under 2 years is unusual for a complete plant — check that capex includes pond cover, gas treatment, civils and grid connection.");
     warn("t5_warn", msgs.join(" "));
   }
 
